@@ -8,7 +8,10 @@ from pathlib import Path
 from time import sleep
 import shutil
 
-"""
+# Test for
+# Different
+# branching
+
 rangadóMainPage = 'https://patria.rtvs.sk/clanky/rangado-derby?page='
 headers = headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.193 Safari/537.36'}
@@ -105,4 +108,3 @@ def rangadoDownloader():
 
 
 rangadoDownloader()
-"""
