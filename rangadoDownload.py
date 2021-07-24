@@ -8,27 +8,46 @@ from pathlib import Path
 from time import sleep
 import shutil
 
-# Test for
-# Different
-# branching
-
-rangadóMainPage = 'https://patria.rtvs.sk/clanky/rangado-derby?page='
-headers = headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.193 Safari/537.36'}
-
+RANGADO_MAIN_PAGE = 'https://patria.rtvs.sk/clanky/rangado-derby?page='
+HEADERS = headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36'}
+SPEC_CHAR_LIST = ['<', '>', ':', '"', '/', '\'', '|', '?', '*']
+PAGE_COUNT = 35
 
 # Rangadó mappa létrehozása
-Path('C:\\Users\\PC\\Desktop\\Kristof\\Rangadó').mkdir(
-    parents=True, exist_ok=True)
-os.chdir('C:\\Users\\PC\\Desktop\\Kristof\\Rangadó\\')
+# Path('C:\\Users\\PC\\Desktop\\Kristof\\Rangadó').mkdir(
+# parents=True, exist_ok=True)
+# os.chdir('C:\\Users\\PC\\Desktop\\Kristof\\Rangadó\\')
+
+def main():
+
+    # TODO Structure the main script workflow
+    """
+    CMD output for later
+    print('Looking through %s' % rangadóMainPage + str(i))
+    """
+    pass
 
 
+def get_page_content():
+    webPageList = []
+    for i in range(PAGE_COUNT + 1):
+        with requests.get(RANGADO_MAIN_PAGE + str(i), headers=HEADERS) as re:
+            re.raise_for_status()
+            soup = BeautifulSoup(re.text, "html.parser")
+            webPageList.append(soup)
+    return webPageList
+
+
+print(get_page_content())
+
+
+"""
 def rangadoDownloader():
     # Fájlenevet nem tartalmazható karakterek listába helyezése
-    specCharList = ['<', '>', ':', '"', '/', '\'', '|', '?', '*']
     for i in range(1, 3):
         with requests.get(rangadóMainPage + str(i), headers=headers) as re:
-            print('Looking through %s' % rangadóMainPage + str(i))
+            # print('Looking through %s' % rangadóMainPage + str(i))
             re.raise_for_status()
             soup = BeautifulSoup(re.text, 'html.parser')
             sleep(5)
@@ -105,6 +124,4 @@ def rangadoDownloader():
     print('All files are downloaded.')
 
     idChecker.close()
-
-
-rangadoDownloader()
+"""
