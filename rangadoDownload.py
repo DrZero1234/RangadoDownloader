@@ -13,33 +13,82 @@ HEADERS = headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36'}
 SPEC_CHAR_LIST = ['<', '>', ':', '"', '/', '\'', '|', '?', '*']
 PAGE_COUNT = 35
+MAIN_PATH = Path("C:\\Users\\konry\\Desktop\\Kristof\\Rangado")
 
 # Rangadó mappa létrehozása
 # Path('C:\\Users\\PC\\Desktop\\Kristof\\Rangadó').mkdir(
 # parents=True, exist_ok=True)
 # os.chdir('C:\\Users\\PC\\Desktop\\Kristof\\Rangadó\\')
 
+
 def main():
+    global i
+    for i in range(PAGE_COUNT + 1):
+        print('Looking through %s' % RANGADO_MAIN_PAGE + str(i))
+        articleList = get_page_soup()
+        # Ensuring that the IDTracker Exist in a Rangado folder and use it later for a condition
+        os.chdir("C:\\Users\\konry\\Desktop\\Kristof")
+        os.makedirs("Rangado", exist_ok=True)
+        os.chdir("C:\\Users\\konry\\Desktop\\Kristof\\Rangado")
+        with open("idTracker.txt", "w") as f:
+            f.close()
+        # End of creating the IDTracker file
+        get_article_data(articleList)
+
+        # print(articleList)
+        # print(get_article_data(articleList))
 
     # TODO Structure the main script workflow
     """
     CMD output for later
-    print('Looking through %s' % rangadóMainPage + str(i))
+
     """
-    pass
 
 
-def get_page_content():
-    webPageList = []
-    for i in range(PAGE_COUNT + 1):
-        with requests.get(RANGADO_MAIN_PAGE + str(i), headers=HEADERS) as re:
-            re.raise_for_status()
-            soup = BeautifulSoup(re.text, "html.parser")
-            webPageList.append(soup)
-    return webPageList
+"""
+get_page_soup()
+
+Connects to the main page of the Rangado podcast with requests
+Gets a list of articles per page which will contain data and audio of the podcasrt
+Returns the list of article in a page
+
+"""
 
 
-print(get_page_content())
+def get_page_soup():
+    print("Getting the content of the page....")
+    with requests.get(RANGADO_MAIN_PAGE + str(i), headers=HEADERS) as re:
+        re.raise_for_status()
+        soup = BeautifulSoup(re.text, "html.parser")
+        articles = soup.find_all('article', class_='col-12 news-item')
+    return articles
+
+
+def get_article_data(articleList):
+    allArticleDataList = []
+    articleDataDic = {}
+    for article in articleList:
+        articleLink = 'https://patria.rtvs.sk' + \
+            article.find('a')['href']
+        articleID = articleLink.split('/')[5]
+        with requests.get(articleLink, headers=HEADERS) as re:
+            articleSoup = BeautifulSoup(re.text, "html.parser")
+            articleDate = articleSoup.find(
+                'div', class_='article__date-name').text.split("|")[0]
+            articleTitle = str(articleSoup.find(
+                'h1', class_='page__title').text.strip())
+            mp3Title_list = articleSoup.find_all("strong", class_="player-title")
+            for title in mp3Title_list:
+                print(title.text)
+            articleDataDic["Date"] = str(articleDate)
+            articleDataDic["Title"] = articleTitle
+            allArticleDataList.append(articleDataDic)
+            articleDataDic = {}
+    # print(allArticleDataList)
+
+
+if __name__ == "__main__":
+    main()
 
 
 """
